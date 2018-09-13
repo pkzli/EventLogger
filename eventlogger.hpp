@@ -47,7 +47,7 @@ public :
         }
         std::ofstream writer;
         writer.open(fileName_);
-        writer << "time , event , eventcounter" << std::endl;
+        writer << "time,event,eventcounter" << std::endl;
         writer.close();
         events_ = std::vector<Event>(eventsToAccumulate_);
         eventIndex_ = 0;
@@ -68,7 +68,7 @@ public :
             auto e = events_[i];
             if(eventsCounter_.count(e.name_) == 0) eventsCounter_[e.name_] = 0;
             else eventsCounter_[e.name_]++; 
-            writer << e.timeStamp_ << " , " << e.name_ << " , " << eventsCounter_[e.name_] << std::endl;
+            writer << e.timeStamp_ << "," << e.name_ << "," << eventsCounter_[e.name_] << std::endl;
         }
         events_.clear();
         writer.close();
