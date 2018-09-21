@@ -24,6 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 #include <fstream>
 
+#include <iostream>
+
 // from https://stackoverflow.com/questions/25225948/how-to-check-if-a-file-exists-in-c-with-fstreamopen?rq=1
 inline bool fileExists (const std::string& filename) {
   struct stat buffer;   
@@ -31,7 +33,10 @@ inline bool fileExists (const std::string& filename) {
 }
 
 struct Event{
-    Event(){}
+    Event(){
+        timeStamp_ = 0;
+        name_ = "bidon";
+    }
     Event(unsigned long long ts, std::string n): timeStamp_(ts), name_(n){}
     unsigned long long timeStamp_;
     std::string name_;
@@ -70,19 +75,21 @@ public :
             else eventsCounter_[e.name_]++; 
             writer << e.timeStamp_ << "," << e.name_ << "," << eventsCounter_[e.name_] << std::endl;
         }
-        events_.clear();
+        events_ = std::vector<Event>(eventsToAccumulate_);
         writer.close();
         eventIndex_ = 0;
         #endif
     }
 
-    inline void log(const std::string& name){
+    inline void log(const char* name){
         #ifdef LOG
         // time from https://stackoverflow.com/questions/19555121/how-to-get-current-timestamp-in-milliseconds-since-1970-just-the-way-java-gets
-        events_[eventIndex_].timeStamp_ = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-        events_[eventIndex_].name_ = name;
+        auto t = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        events_[eventIndex_].name_ = std::string(name);
+        events_[eventIndex_].timeStamp_ = t;
+
         eventIndex_++;
-        if( eventIndex_ >= eventsToAccumulate_ ) flush();
+        if( eventIndex_ == eventsToAccumulate_ ) flush();
         #endif
     }
 

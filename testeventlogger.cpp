@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <math.h>
 
+
 inline double func(double val){
   return sqrt(sqrt(val)*pow(val, 2.0))/(log10(val)*500.0);
 }
